@@ -27,9 +27,9 @@ Python implementation of Mircea Popescu Fabulous Hash Function
     * else, that bit in R is flipped.
 
 ## Properties
-  # The very last bit of M can produce significant change in R, potentially touching all its bits.
-  # The fabulous hash-function is message-size indifferent, being operable of messages of any size within the limitations of the hardware only.
-  # The fabulous hash-function outputs hashes of any arbitrary length equally well.
-  # It is not possible to say, on the basis of a hash, how much memory, or how much CPU was consumed to process the message.
-  # The cheapest way to calculate how much memory, or how much CPU will be needed to process a message is to process the message.
-  # Because the fabulous hash function does not use blocks, it does not require any kind of padding.
+  1. The very last bit of M can produce significant change in R, potentially touching all its bits.
+  1. The fabulous hash-function is message-size indifferent, being operable of messages of any size within the limitations of the hardware only.
+  1. The fabulous hash-function outputs hashes of any arbitrary length equally well.
+  1. It is not possible to say, on the basis of a hash, how much memory, or how much CPU was consumed to process the message.
+  1. The cheapest way to calculate how much memory, or how much CPU will be needed to process a message is to process the message.
+  1. Because the fabulous hash function does not use blocks, it does not require any kind of padding.
