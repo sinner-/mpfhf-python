@@ -23,7 +23,7 @@ Python implementation of Mircea Popescu Fabulous Hash Function
     * That bit in R is flipped and we rewind.
     * else, that bit in R is flipped and S is inverted.
   * if 1, half-screw S in R. If the bit in R found at the position equal to the remainder of the division of our position in M by the size of R is equal to the bit in S found at the position equal to the remainder of the division of our position in M by the size of S 
-    * We expand S and screw R in S.
+    * We expand and screw R in S.
     * else, that bit in R is flipped.
 
 ## Properties
