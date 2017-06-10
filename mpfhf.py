@@ -15,16 +15,19 @@ def invert(field):
     for i in range(0, len(field)):
         flip(field, i)
 
-def screw(a, b, M, M_pos, half):
+def screw(a, b, M_pos, half):
     count = len(a)/2 if half else len(a)
     for i in range(0, len(a)):
-        flip(b, ((a[i] * M_pos) % len(b)))
+        flip(b, ((i * M_pos) % len(b)))
+
+def expand():
+    S.append(0)
 
 DEBUG = False
 message = argv[1]
 R_len = int(argv[2])
 if len(argv) == 4 and argv[3] == "debug":
-    DEBUG = True
+    DEBUG=True
 
 M = map(int, ''.join(map(lambda p: format(p, 'b'), map(ord, message))))
 S = [0]
@@ -36,47 +39,61 @@ debug("M: %s" % stringify(M))
 debug("S: %s" % stringify(S))
 debug("R: %s" % stringify(R))
 
-for i in range(0, len(M)):
-    debug("\nStep %d:" % (i+1))
-    debug("We find ourselves at position %d in M, that bit is %d." % (i, M[i]))
-    if M[i] == 0:
+step = 1
+M_pos = 0
+while M_pos < len(M):
+    debug("\nStep %d" % (step))
+    debug("We find ourselves at position %d in M, that bit is %d." % (M_pos, M[M_pos]))
+    if M[M_pos] == 0:
         debug("Because the bit is 0:")
-        debug("\tWe expand S:")
-        S.append(0)
-        debug("\tS = %s," % stringify(S))
-        debug("\tand then screw S in R:")
-        screw(S, R, M, i, False)
-        debug("\tR = %s," % stringify(R))
-        debug("\tand then flip the M_pos%R_len-th bit in R:")
-        flip(R, i%R_len)
-        debug("\tR = %s," % stringify(R))
+        debug("\tWe expand:")
+        expand()
+        debug("\tS = %s." % stringify(S))
+        debug("\tWe screw S in R:")
+        screw(S, R, M_pos, False)
+        debug("\tR = %s." % stringify(R))
         debug("\tWe check to see if the M_pos%R_len-th bit in R is 0:")
-        if R[i%R_len] == 0:
-            debug("\t\tIt is, so we rewind by one.")
-            i -= 1
+        if R[M_pos%R_len] == 0:
+            debug("\tBecause the M_pos%R_len-th bit in R is 0:")
+            debug("\t\tWe flip the M_pos%R_len-th bit in R:")
+            flip(R, M_pos%R_len)
+            debug("\t\tR = %s." % stringify(R))
+            if M_pos != 0:
+                debug("\t\tM_pos is not 0, so we rewind.")
+                M_pos -= 1
         else:
-            debug("\t\tIt isn't, so we invert S:")
+            debug("\tBecause the M_pos%R_len-th bit in R is 1:")
+            debug("\t\tWe flip the M_pos%R_len-th bit in R:")
+            flip(R, M_pos%R_len)
+            debug("\t\tR = %s." % stringify(R))
+            debug("\t\tWe invert S:")
             invert(S)
-            debug("\tS = %s." % stringify(S))
-    if M[i] == 1:
+            debug("\t\tS = %s." % stringify(S))
+    else:
         debug("Because the bit is 1:")
         debug("\tWe halfscrew S in R:")
-        screw(S, R, M, i, True)
-        debug("\tR = %s," % stringify(R))
+        screw(S, R, M_pos, True)
+        debug("\tR = %s." % stringify(R))
         S_len = len(S)
-        debug("\tWe compare the M_pos%R_len-th bit of R with the M_pos%R_len-th bit of S:")
-        if R[i%R_len] == S[i%S_len]:
-            debug("\t\tBecause they match, we screw S in R:")
-            screw(S, R, M, i, False)
-            debug("\t\tR = %s." % stringify(R))
+        debug("\tWe compare the M_pos%R_len-th bit in R with the M_pos%R_len-th bit in S:")
+        if R[M_pos%R_len] == S[M_pos%S_len]:
+            debug("\tBecause the bits match:")
+            debug("\t\tWe expand:")
+            expand()
+            debug("\t\tS = %s." % stringify(S))
+            debug("\t\tWe screw R in S:")
+            screw(R, S, M_pos, False)
+            debug("\t\tS = %s." % stringify(S))
         else:
-            debug("\t\tBecause they don't match, we flip the M_pos%R_len-th bit of R:")
-            flip(R, i%R_len)
+            debug("\tBecause the bits match")
+            debug("\t\tWe flip the M_pos%R_len-th bit in R:")
+            flip(R, M_pos%R_len)
             debug("\t\tR = %s." % stringify(R))
+    M_pos += 1
+    step += 1
 
 if DEBUG:
-    debug("Our work has ended. The message was:")
-    debug(stringify(M))
-    debug("We used %d bits for the state machine." % len(S))
-    debug("The resulting hash is:")
+    debug("\nOur work has ended, in %d steps and using %d bits for the state machine." % (step, len(S)))
+    debug("The message was:\n%s" % stringify(M))
+    debug("The resulting hash is:") 
 print(stringify(R))
