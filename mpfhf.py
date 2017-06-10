@@ -23,7 +23,6 @@ message = argv[1]
 R_len = int(argv[2])
 
 M = list(map(int, ''.join(map(lambda p: format(p, 'b'), map(ord, message)))))
-M = [1] * 32
 S = [0]
 R = [0] * R_len
 M_pos = 0
