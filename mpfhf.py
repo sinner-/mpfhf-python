@@ -11,7 +11,7 @@ def invert(field):
     for i in range(0, len(field)):
         flip(field, i)
 
-def screw(a, b, M_pos, half):
+def screw(a, b, half):
     count = len(a)/2 if half else len(a)
     for i in range(0, count):
         flip(b, ((i * M_pos) % len(b)))
@@ -23,6 +23,7 @@ message = argv[1]
 R_len = int(argv[2])
 
 M = list(map(int, ''.join(map(lambda p: format(p, 'b'), map(ord, message)))))
+M = [1] * 32
 S = [0]
 R = [0] * R_len
 M_pos = 0
@@ -31,7 +32,7 @@ step = 0
 while M_pos < len(M):
     if M[M_pos] == 0:
         expand()
-        screw(S, R, M_pos, False)
+        screw(S, R, False)
         if R[M_pos%R_len] == 0:
             flip(R, M_pos%R_len)
             if M_pos != 0: M_pos -= 1
@@ -39,10 +40,10 @@ while M_pos < len(M):
             flip(R, M_pos%R_len)
             invert(S)
     else:
-        screw(S, R, M_pos, True)
+        screw(S, R, True)
         if R[M_pos%R_len] == S[M_pos%len(S)]:
             expand()
-            screw(R, S, M_pos, False)
+            screw(R, S, False)
         else:
             flip(R, M_pos%R_len)
     M_pos += 1
