@@ -22,7 +22,7 @@ def expand():
 message = argv[1]
 R_len = int(argv[2])
 
-M = list(map(int, ''.join(map(lambda p: format(p, 'b'), map(ord, message)))))
+M = list(map(int, ''.join(map(lambda p: '{0:08b}'.format(p, 'b'), map(ord, message)))))
 S = [0]
 R = [0] * R_len
 M_pos = 0
