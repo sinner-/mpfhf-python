@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+from time import time
 from sys import argv
+
+def get_time():
+    return int(round(time() * 1000))
 
 def stringify(field):
     return ''.join(map(str, field))
@@ -19,10 +23,20 @@ def screw(a, b, half):
 def expand():
     S.append(0)
 
+print_time = False
+
+if len(argv) < 4:
+    print("Usage: python mpfhf.py <message> <hashlength> <time|notime>")
+    exit(1)
+
 message = argv[1]
 R_len = int(argv[2])
 
+if argv[3] == "time":
+    print_time = True
+
 M = list(map(int, ''.join(map(lambda p: '{0:08b}'.format(p, 'b'), map(ord, message)))))
+start_time = get_time()
 S = [0]
 R = [0] * R_len
 M_pos = 0
@@ -48,4 +62,6 @@ while M_pos < len(M):
     M_pos += 1
     step += 1
 
+if print_time:
+    print(get_time() - start_time)
 print(stringify(R))
